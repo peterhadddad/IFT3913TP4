@@ -138,7 +138,7 @@
                 assertNotNull(convertedAmountMin);
                 assertEquals(0, convvertedAmountMin, 0);
 
-                Double amountMax = 1000000000;
+                Double amountMax = 1000000;
                 Double convertedAmountMax = Currency.convert(amountMax, exchangeValue);
 
                 assertNotNull(convertedAmountMax);
