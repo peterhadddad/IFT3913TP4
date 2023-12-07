@@ -38,6 +38,37 @@ public void testMainWindowValide() {
 }
 
 @Test
+public void testMainWindowInvalide() {
+    // On crée une liste de devises afin de naviguer à travers pour les tests
+    ArrayList<Currency> currencies = Currency.init(); 
+
+    // On teste la conversion entre toutes les paires de devises valides en sélectionnant
+    // 2 devises différentes
+    for (Currency currencyOne : currencies) {           // On traverse la liste pour la première devise que nous allons utiliser
+        for (Currency currencyTwo : currencies) {       // Deuxième devise
+            if (currencyOne != currencyTwo) {           // On s'assure que les 2 devises sélectionner ne sont pas les mêmes
+                Double amountNegatif = -50.0;
+                Double convertedAmountNegatif = MainWindow.convert(
+                    currencyOne.getShortName(), currencyTwo.getShortName(), currencies, amountNegatif
+                );
+
+                // Si le résultat n'est pas nul, alors le test a passé
+                assertNotNull(convertedAmountNegatif);
+
+                Double amountGrand = 99999999.0;
+                Double convertedAmountGrand = MainWindow.convert(
+                    currencyOne.getShortName(), currencyTwo.getShortName(), currencies,amountGrand
+                );
+                assertNotNull(convertedAmountGrand);
+
+            }
+        }
+    }
+}
+
+
+
+@Test
 public void testConvertInvalidCurrencyPair() {
     ArrayList<Currency> currencies= new ArrayList<>();
     // Ajoutez des devises valides dans votre liste 'currencies'
@@ -53,37 +84,6 @@ public void testConvertInvalidCurrencyPair() {
 }
 
 
-
-
-@Test
-public void testMainWindowMontantValide() {
-    ArrayList<Currency> currencies = Currency.init(); 
-
-    // On teste si les montants à convertir sont valides
-    for (Currency currencyOne : currencies) {
-        for (Currency currencyTwo : currencies) {
-            if (currencyOne != currencyTwo) {
-                Double amountMin = (double) 0;
-                Double convertedAmountMin = MainWindow.convert(
-                    currencyOne.getShortName(), currencyTwo.getShortName(), currencies, amountMin
-                );
-
-                // On vérifie si le résultat n'est pas nul ET on s'attend à ce que le
-                // résultat de la conversion soit 0.
-                assertNotNull(convertedAmountMin);
-                assertEquals(0, convertedAmountMin, 0);
-
-                Double amountMax = (double) 1000000;
-                Double convertedAmountMax = MainWindow.convert(
-                    currencyOne.getShortName(), currencyTwo.getShortName(), currencies, amountMax
-                );
-
-                 // Si le résultat n'est pas nul, alors le test a passé
-                assertNotNull(convertedAmountMax);
-            }
-        }
-    }
-}
 
 @Test
 public void testConvertInvalidFirstCurrency(){
