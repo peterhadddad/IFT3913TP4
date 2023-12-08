@@ -1,20 +1,3 @@
-package test;
-
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-
-import java.util.ArrayList;
-
-import org.junit.Test;
-
-import currencyConverter.Currency;
-import currencyConverter.MainWindow;
-
-public class MainWindowTest{
-
-@Test
 public void testMainWindowValide() {
     // On crée une liste de devises afin de naviguer à travers pour les tests
     ArrayList<Currency> currencies = Currency.init(); 
@@ -29,7 +12,7 @@ public void testMainWindowValide() {
                     currencyOne.getShortName(), currencyTwo.getShortName(), currencies, amount
                 );
 
-                // Si le résultat n'est pas nul, alors le test a passé
+                // Si le résultat n'est pas nul, alors la méthode fonctionne correctement.
                 assertNotNull(convertedAmount);
 
             }
@@ -52,87 +35,82 @@ public void testMainWindowInvalide() {
                     currencyOne.getShortName(), currencyTwo.getShortName(), currencies, amountNegatif
                 );
 
-                // Si le résultat n'est pas nul, alors le test a passé
-                assertNotNull(convertedAmountNegatif);
+                // Si le résultat est nul, alors la méthode gère bien les valeurs non valides
+                assertNull(convertedAmountNegatif);
 
                 Double amountGrand = 99999999.0;
                 Double convertedAmountGrand = MainWindow.convert(
                     currencyOne.getShortName(), currencyTwo.getShortName(), currencies,amountGrand
                 );
-                assertNotNull(convertedAmountGrand);
+
+                // Si le résultat est nul, alors la méthode gère bien les valeurs non valides
+                assertNull(convertedAmountGrand);
 
             }
         }
     }
 }
 
-
-
 @Test
-public void testConvertInvalidCurrencyPair() {
-    ArrayList<Currency> currencies= new ArrayList<>();
-    // Ajoutez des devises valides dans votre liste 'currencies'
-
-    Double amount = 100.0;
-
-    // Assurez-vous que la paire de devises est invalide dans votre liste 'currencies'
-    // Exemple: Currency1 = "EUR", Currency2 = "XYZ" (où XYZ n'existe pas dans vos données)
-
-    Double convertedAmount = MainWindow.convert("EUR", "XYZ", currencies, amount);
-
-    assertEquals(0.0, convertedAmount,0.0); // Vérifie si convertedAmount est égal à 0.0
-}
-
-
-
-@Test
-public void testConvertInvalidFirstCurrency(){
+public void testMainWindowMontantValide() {
     ArrayList<Currency> currencies = Currency.init(); 
 
-    Double amount=100.0;
+    // On teste si les montants à convertir sont valides
+    for (Currency currencyOne : currencies) {
+        for (Currency currencyTwo : currencies) {
+            if (currencyOne != currencyTwo) {
+                Double amountMin = 0;
+                Double convertedAmountMin = MainWindow.convert(
+                    currencyOne.getShortName(), currencyTwo.getShortName(), currencies, amountMin
+                );
 
-    Double convertedAmount=MainWindow.convert("Invalide", "USD", currencies, amount);
-    assertEquals(0.0,convertedAmount,0.001);
+                // On vérifie si le résultat n'est pas nul ET on s'attend à ce que le
+                // résultat de la conversion soit 0.
+                assertNotNull(convertedAmountMin);
+                assertEquals(0, convertedAmountMin, 0);
 
-}
+                Double amountMax = 1000000;
+                Double convertedAmountMax = MainWindow.convert(
+                    currencyOne.getShortName(), currencyTwo.getShortName(), currencies, amountMax
+                );
 
-}
-
-package test;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
-
-import org.junit.Test;
-
-public class currencyTest {
-    @Test
-
-    public void testConvertValidExchangeValue(){
-        Double amount=100.0;
-        Double exchangeValue=1.5;
-        Double convertedAmount=currencyConverter.Currency.convert(amount, exchangeValue);
-        assertEquals(150,convertedAmount,0.001);
-    }
-
-    @Test
-        public void testConvertInvalidExchangeValue(){
-        Double amount=100.0;
-        Double exchangeValue=null;
-        Double convertedAmount=null;
-
-        try{
-            convertedAmount=currencyConverter.Currency.convert(amount, exchangeValue);
-
-        }catch(NullPointerException e){
-            e.printStackTrace();
-
+                // Si le résultat n'est pas nul, alors la méthode gère bien la valeur maximale
+                assertNotNull(convertedAmountMax);
+            }
         }
-        assertNull(convertedAmount);
     }
-
-    
-
 }
 
+@Test
+public void touteDeviseExistantes(){
+    ArrayList<Currency> currencies = Currency.init(); 
+    String[] currenciesUtilisee={"USD","CAD","GBP","EUR","CHF","AUD"};
+
+    for(String currencyCode:currenciesUtilisee){
+        boolean currencyExist=checkIfCurrencyExists(currencies,currencyCode);
+        assertTrue("Currency " + currencyCode + " does not exist", currencyExist);
+    }
+}
+
+private boolean checkIfCurrencyExists(ArrayList<Currency> currencies, String currencyCode) {
+    for(Currency currency:currencies){
+        if(currency.getShortName().equals(currencyCode)){
+            return true;
+        }
+    }
+    return false;
+}
+
+
+@Test
+public void testMainWindowDevisesInvalide() {
+    ArrayList<Currency> currencies = Currency.init();
+
+    // On test maintenant la conversion entre des pairs invalides
+    Double amount = 100.0; 
+    Double convertedAmount = MainWindow.convert("Canadian Dollar", "Australian Dollar", currencies, amount);
+
+    // Si le résultat est nul, alors le code gère correctement les devises non valides
+    assertNull(convertedAmount); 
+}
 
