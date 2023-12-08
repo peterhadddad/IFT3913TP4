@@ -113,4 +113,129 @@ public void testMainWindowDevisesInvalide() {
     // Si le résultat est nul, alors le code gère correctement les devises non valides
     assertNull(convertedAmount); 
 }
+package test;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+
+import java.util.ArrayList;
+
+import org.junit.Test;
+
+import currencyConverter.Currency;
+
+public class currencyTest {
+    @Test
+
+    public void testConvertValidExchangeValue(){
+        Double amount=100.0;
+        Double exchangeValue=1.5;
+        Double convertedAmount=currencyConverter.Currency.convert(amount, exchangeValue);
+        assertEquals(150,convertedAmount,0.001);
+    }
+
+    @Test
+        public void testConvertInvalidExchangeValue(){
+        Double amount=100.0;
+        Double exchangeValue=null;
+        Double convertedAmount=null;
+
+        try{
+            convertedAmount=currencyConverter.Currency.convert(amount, exchangeValue);
+
+        }catch(NullPointerException e){
+            e.printStackTrace();
+
+        }
+        assertNull(convertedAmount);
+    }
+    @Test
+    public void testCurrencyValide() {
+        ArrayList<Currency> currencies = Currency.init();
+
+        for (Currency currencyTest : currencies) {
+            for (Double exchangeValue : currencyTest.getExchangeValues().values()) {
+                Double amount = 100.0;
+                Double convertedAmount = Currency.convert(amount, exchangeValue);
+
+                assertNotNull(convertedAmount);
+
+                // On aurait voulu tester les résultats obtenus spécifiques (avec assertEquals), 
+                // par contre,puisque nous traversons tous les taux d'échanges de devises possibles,
+                // il serait inpertinent de faire cela.
+
+            }
+        }
+    }
+
+    @Test
+    public void testCurrencyInvalide() {
+        Double amount = 100.0;
+        Double exchangeRate = -0.82;
+        Double convertedAmount = Currency.convert(amount, exchangeRate);
+
+        // Si le résultat est nul, alors le programme s'occupe des taux d'échanges 
+        // négatifs correctement
+        assertNull(convertedAmount);
+    }
+    @Test
+    public void testCurrencyMontantValide() {
+        ArrayList<Currency> currencies = Currency.init();
+
+        for (Currency currencyTest : currencies) {
+            for (Double exchangeValue : currencyTest.getExchangeValues().values()) {
+                Double amountMin = 0.0;
+                Double convertedAmountMin = Currency.convert(amountMin, exchangeValue);
+
+                assertNotNull(convertedAmountMin);
+                assertEquals(0, convertedAmountMin, 0);
+
+                Double amountMax = 1000000000.0;
+                Double convertedAmountMax = Currency.convert(amountMax, exchangeValue);
+
+                assertNotNull(convertedAmountMax);
+            }
+        }
+    }
+
+    @Test
+    public void testCurrencyMontantInvalide() {
+        ArrayList<Currency> currencies = Currency.init();
+
+        for (Currency currencyTest : currencies) {
+            for (Double exchangeValue : currencyTest.getExchangeValues().values()) {
+                Double amountNeg = -100.0;
+                Double convertedAmountNeg = Currency.convert(amountNeg, exchangeValue);
+
+                assertNull(convertedAmountNeg);
+
+                Double amountSur = 1500000.0;
+                Double convertedAmountSur = Currency.convert(amountSur, exchangeValue);
+
+                assertNull(convertedAmountSur);
+            }
+        }
+    }
+    @Test
+    public void testCurrencyMontantNonDefini() {
+        ArrayList<Currency> currencies = Currency.init();
+
+        for (Currency currencyTest : currencies) {
+            for (Double exchangeValue : currencyTest.getExchangeValues().values()) {
+                Double amountND = null;
+                Double convertedAmountNND = Currency.convert(amountND, exchangeValue);
+
+                // Si le résultat est nul, alors le code gère un montant non défini correctement
+                assertNull(convertedAmountNND);
+            }
+        }
+    }
+
+
+
+
+    
+
+}
 
