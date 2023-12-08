@@ -120,12 +120,12 @@ private boolean checkIfCurrencyExists(ArrayList<Currency> currencies, String cur
 
 
 @Test
-public void testMainWindowInvalide() {
+public void testMainWindowDevisesInvalide() {
     ArrayList<Currency> currencies = Currency.init();
 
     // On test maintenant la conversion entre des pairs invalides
     Double amount = 100.0; 
-    Double convertedAmount = MainWindow.convert("CAD", "AUD", currencies, amount);
+    Double convertedAmount = MainWindow.convert("Canadian Dollar", "Australian Dollar", currencies, amount);
 
     // Si le résultat est nul, alors le code gère correctement les devises non valides
     assertNull(convertedAmount); 
